@@ -1,0 +1,37 @@
+# DRAFT - replace with the real gateway image / build before distributing.
+services:
+  gateway:
+    # TODO: point at the published gateway image once it exists.
+    # The image must implement:
+    #   PUT /files/<relative-path>  -> 201 {"path","bytes"}; 400/411/413 on bad input
+    #   GET /health                 -> {"ok": true}
+    # and reject "..", absolute paths, and backslashes.
+    image: local-gateway:latest
+    restart: unless-stopped
+    volumes:
+      # The ONE folder Muse may use. Change the host path freely.
+      - ./shared:/drop
+    networks:
+      - gwnet
+
+  tailscale:
+    image: tailscale/tailscale:latest
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    volumes:
+      - ./tailscale-state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    command: >
+      sh -c "tailscaled --tun=userspace-networking --socks5-server=localhost:1055 &
+             tailscale up --hostname=muse-gateway &&
+             tailscale serve --bg 8730 http://gateway:8730"
+    networks:
+      - gwnet
+    ports:
+      # served through the tailnet only; no host port needed in production.
+      - "127.0.0.1:8730:8730"
+
+networks:
+  gwnet:

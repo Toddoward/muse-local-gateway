@@ -1,9 +1,9 @@
 ---
-name: "local_gateway"
+name: "muse_local_gateway"
 description: "Give Muse direct access to the user's own local machine over Tailscale: place files, read back results, and work with local data. Use when the user wants Muse to reach their home PC, lab box, or home server directly instead of through a relay."
 ---
 
-# Local Gateway
+# Muse Local Gateway
 
 > Status: modular draft (2026-10-08). The K12 deployment is verified live;
 > the distributable modules below are new and await field testing.

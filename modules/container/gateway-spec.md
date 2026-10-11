@@ -1,3 +1,6 @@
+[![English](https://img.shields.io/badge/lang-English-111111?style=flat-square)](gateway-spec.md)
+[![한국어](https://img.shields.io/badge/lang-%ED%95%9C%EA%B5%AD%EC%96%B4-lightgrey?style=flat-square)](gateway-spec.kr.md)
+
 # Gateway API spec
 
 The minimal HTTP API a gateway must implement. Verified against the

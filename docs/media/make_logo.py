@@ -14,7 +14,8 @@ How it is drawn: the centre line is sampled every few px; each short piece is st
 its place along the line (so the colour flows without seams), and pieces marked "back" are drawn
 before the "front" ones, which is what puts one layer behind the other at a crossing.
 
-gateway: `>_` — the chevron's lower arm runs on, loops round behind itself, and comes out as the underscore.
+gateway: `>_` — down the chevron, a loop behind its lower arm, right along the back of the underscore,
+         a fold, and back left along its front face (a flat folded band, not a single bar).
 forge:   a gadget that speaks — down the outer voice arc, a tight fold, up the inner arc, round the device,
          and up its right side, which passes behind the top edge.
 """
@@ -105,22 +106,34 @@ def fit(body, runs, box=440):
 
 # --- marks ----------------------------------------------------------------------------------------
 def gateway():
-    a, tip = (150, 104), (312, 226)               # chevron: start, tip (arms at ~37 degrees)
-    ang = math.radians(37)
+    """`>_`: down the chevron (front), a tight loop at the bottom-left that passes behind the lower arm,
+    right along the back of the underscore, a fold at its right end, and back left along its front face,
+    ending in a round cap just right of the arm. The front face half-covers the back run, so a dark band
+    of the back layer shows above it."""
+    a, tip = (150, 96), (318, 226)                # chevron: start, tip
+    ang = math.radians(37)                        # lower arm heads down-left at this angle
     d1, d2 = unit(tip[0] - a[0], tip[1] - a[1]), (-math.cos(ang), math.sin(ang))
     k = 44                                        # the turn at the tip starts this far back (tension)
     p1, p2 = (tip[0] - d1[0] * k, tip[1] - d1[1] * k), (tip[0] + d2[0] * k, tip[1] + d2[1] * k)
-    yu, r = 352, 44                               # underscore line, loop radius
+    yb, r = 352, 40                               # back run of the underscore, loop radius
+    sep = 0.75 * W                                # front run sits this far below: it half-covers the back
+    yf, xr = yb + sep, 456                        # front run, right end of the band
     n = (-math.sin(ang), -math.cos(ang))          # loop centre lies up-left of the arm
-    t = (yu + r - tip[1] - r * n[1]) / d2[1]
+    t = (yb + r - tip[1] - r * n[1]) / d2[1]
     e = (tip[0] + d2[0] * t, tip[1] + d2[1] * t)  # the arm becomes the loop here
     c = (e[0] + r * n[0], e[1] + r * n[1])
     a0 = math.atan2(e[1] - c[1], e[0] - c[0])
+    xa = tip[0] + d2[0] * ((yb - tip[1]) / d2[1])  # where the back run passes behind the arm
+    xf = xa + 1.45 * W                            # the front face ends here, clear of the arm
     runs = [(line(a, p1), "front"), (quad(p1, tip, p2), "front"), (line(p2, e), "front"),
-            (arc(c, r, a0, 1.5 * math.pi), "back"), (line((c[0], yu), (424, yu)), "back")]
+            (arc(c, r, a0, 1.5 * math.pi), "back"),                         # loop, behind the arm
+            (line((c[0], yb), (xr, yb)), "back"),                            # back run, to the right
+            (arc((xr, yb + sep / 2), sep / 2, -math.pi / 2, math.pi / 2), "front"),   # fold
+            (line((xr, yf), (xf, yf)), "front")]                             # front face, back left
     s, lens = marks(runs)
     f = lambda i: lens[min(i, len(lens) - 1)] / lens[-1]
-    stops = [(0, DEEP), (f((s[1] + s[2]) // 2), CYAN), (f(s[3]), BLUE), (f(s[4]), BACK), (1, CYAN)]
+    stops = [(0, DEEP), (f((s[1] + s[2]) // 2), CYAN), (f(s[3]), BLUE), (f(s[4]), BACK),
+             (f(s[5]), BLUE), (f(s[6]), CYAN), (1, BLUE)]
     return fit(ribbon(runs, stops), runs)
 
 

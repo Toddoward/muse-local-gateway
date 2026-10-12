@@ -13,5 +13,7 @@ First public release.
 - **Setup** for Linux/macOS (`setup.sh`) and Windows (`setup.ps1`), tailnet ACL example,
   experimental direct module, smoke test (`tests/smoke.py`).
 - The bench image includes `libusb-1.0-0`, so USB toolchains (ESP-IDF's openocd) install cleanly.
-- README hero: an animated SVG in Muse's palette, light/dark and English/Korean (`docs/media/make_hero.py`).
+- Logo `>_` (shared with muse-gadget-forge): one continuous ribbon, split where it passes behind itself, drawn as a
+  gradient spline in Muse blues (`docs/media/make_logo.py`; master in Figma).
+- README hero: a 15 s animated SVG in Muse's palette, light/dark and English/Korean (`docs/media/make_hero.py`).
 - Docs in English and Korean.

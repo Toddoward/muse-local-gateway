@@ -1,176 +1,120 @@
-"""Logos for Muse Local Gateway and Muse Gadget Forge — one continuous ribbon each.
+"""The `>_` logo shared by Muse Local Gateway and Muse Gadget Forge.
 
-  python docs/media/make_logo.py   -> docs/media/logo-gateway.svg, docs/media/logo-forge.svg
+  python docs/media/make_logo.py   -> docs/media/logo.svg
 
-Rules (the author's brief):
-  - continuous monoline: one unbroken line, one width, round caps at both ends
-  - a 3D Z-axis trajectory drawn flat: where the line crosses itself, one layer passes behind the other
-  - straight runs for the skeleton, short high-tension curves where the direction turns
-  - depth from colour only: the colour flows along the trajectory (Muse blue -> cyan), and at each
-    crossing the back layer is dark while the front layer is bright. No shadows.
-No background: the marks sit on white and on dark pages alike.
-
-How it is drawn: the centre line is sampled every few px; each short piece is stroked in the colour of
-its place along the line (so the colour flows without seams), and pieces marked "back" are drawn
-before the "front" ones, which is what puts one layer behind the other at a crossing.
-
-gateway: `>_` — down the chevron, a loop behind its lower arm, right along the back of the underscore,
-         a fold, and back left along its front face (a flat folded band, not a single bar).
-forge:   a gadget that speaks — down the outer voice arc, a tight fold, up the inner arc, round the device,
-         and up its right side, which passes behind the top edge.
+Same construction as the master in Figma (file "MuseLocalGateway", group "MuseLocalGateway Logo —
+refined (Claude)"), designed by the author:
+  - one continuous ribbon: down the chevron (straight arms, a rounded turn), a tight loop at the
+    bottom-left, right along the back of the underscore, a flat fold, and back left along its front
+  - the path is split where the underscore's back run passes behind the lower arm:
+      A (behind)  crossing -> back run -> fold -> front face, in path order (the front face covers the back run)
+      B (front)   crossing -> loop -> arms, in REVERSED order (so the arm sits on top at the crossing)
+  - each part is a "gradient spline": a circle every 1 px along the path, coloured by its place on
+    the line between the author's anchors (#004BC7 top, #0087F4 arm end, #0B3A9E loop, #12A0FF fold,
+    #00C9EB end). Depth comes only from this colour and the layer order — no shadows.
 """
 import math
 import os
 
-W = 60          # ribbon width on a 512 canvas (~16% of the mark)
-STEP = 4        # sampling step along the centre line, px
-# Muse colour tokens (muse.ai CSS): blue-750, blue-550, blue-450, cyan-300, and a deep back tone
-DEEP, BLUE, BRIGHT, CYAN, BACK = "#004BC7", "#0087F4", "#12A0FF", "#00C9EB", "#0B3A9E"
+W = 44                                   # ribbon width before fitting
+STEP = 1.0                               # one circle per px of path
+HEIGHT = 312.8                           # fitted height of the mark (as in Figma)
+ANCHORS = ("#004BC7", "#0087F4", "#0B3A9E", "#12A0FF", "#00C9EB")
 
 
-# --- geometry -------------------------------------------------------------------------------------
-def line(p, q):
-    n = max(1, int(math.dist(p, q) / STEP))
-    return [(p[0] + (q[0] - p[0]) * i / n, p[1] + (q[1] - p[1]) * i / n) for i in range(n + 1)]
+def _norm(v):
+    n = math.hypot(*v)
+    return (v[0] / n, v[1] / n)
 
 
-def quad(p, c, q):
-    n = max(2, int((math.dist(p, c) + math.dist(c, q)) / STEP))
-    return [((1 - t) ** 2 * p[0] + 2 * (1 - t) * t * c[0] + t * t * q[0],
-             (1 - t) ** 2 * p[1] + 2 * (1 - t) * t * c[1] + t * t * q[1]) for t in (i / n for i in range(n + 1))]
+def _add(a, b, k=1.0):
+    return (a[0] + b[0] * k, a[1] + b[1] * k)
 
 
-def arc(c, r, a0, a1):
-    n = max(2, int(abs(a1 - a0) * r / STEP))
-    return [(c[0] + r * math.cos(a0 + (a1 - a0) * i / n), c[1] + r * math.sin(a0 + (a1 - a0) * i / n)) for i in range(n + 1)]
+def geometry():
+    """Segments of the centre line: ('L', a, b) or ('A', centre, r, a0, a1). Index 4 ends at the crossing."""
+    S, T = (44, 20), (150, 172)
+    d1 = _norm((T[0] - S[0], T[1] - S[1]))
+    d2 = _norm((-(T[0] - S[0]), T[1] - S[1]))              # lower arm mirrors the upper one
+    a3 = math.radians(12.7)
+    d3 = (math.cos(a3), math.sin(a3))                       # back run, slanting down-right
+    rt, rl, rf = 46, 22, W / 2                              # chevron turn, loop, flat fold
+    half = (math.pi - math.acos(d1[0] * d2[0] + d1[1] * d2[1])) / 2
+    tt = rt / math.tan(half)
+    tA, tB = _add(T, d1, -tt), _add(T, d2, tt)
+    tc = _add(T, _norm(_add((-d1[0], -d1[1]), d2)), rt / math.sin(half))
+    ang = lambda p, c: math.atan2(p[1] - c[1], p[0] - c[0])
+    X = _add(T, d2, 150)                                    # where the back run passes behind the arm
+    r2 = (-d3[0], -d3[1])
+    th = math.acos(d2[0] * r2[0] + d2[1] * r2[1])
+    lc = _add(X, _norm(_add(d2, r2)), rl / math.sin(th / 2))
+    P1, P2 = _add(X, d2, rl / math.tan(th / 2)), _add(X, r2, rl / math.tan(th / 2))
+    la0, la1 = ang(P1, lc), ang(P2, lc)
+    while la1 < la0:
+        la1 += 2 * math.pi                                  # the long way round the loop
+    Q = _add(X, d3, (280 - X[0]) / d3[0])
+    fc = _add(Q, (d3[1], -d3[0]), rf)
+    yf = fc[1] - rf
+    return [("L", S, tA), ("A", tc, rt, ang(tA, tc), ang(tB, tc)), ("L", tB, P1),
+            ("A", lc, rl, la0, la1), ("L", P2, X),
+            ("L", X, Q), ("A", fc, rf, ang(Q, fc), -math.pi / 2), ("L", (fc[0], yf), (X[0] + 2.05 * W, yf))]
 
 
-def unit(x, y):
-    n = math.hypot(x, y)
-    return x / n, y / n
+def sample(segs):
+    pts, marks = [], {}
+    for si, s in enumerate(segs):
+        if s[0] == "L":
+            n = max(2, round(math.dist(s[1], s[2]) / STEP))
+            run = [(s[1][0] + (s[2][0] - s[1][0]) * i / n, s[1][1] + (s[2][1] - s[1][1]) * i / n) for i in range(n + 1)]
+        else:
+            _, c, r, a0, a1 = s
+            n = max(2, round(abs(a1 - a0) * r / STEP))
+            run = [(c[0] + r * math.cos(a0 + (a1 - a0) * i / n), c[1] + r * math.sin(a0 + (a1 - a0) * i / n)) for i in range(n + 1)]
+        pts.extend(run[1:] if pts else run)
+        if si == 2:
+            marks["arm_end"] = len(pts) - 1
+        if si == 3:
+            marks["loop"] = len(pts) - 1 - round(n * 0.35)
+        if si == 4:
+            marks["cross"] = len(pts) - 1
+        if si == 6:
+            marks["fold"] = len(pts) - 1 - round(n / 2)
+    return pts, marks
 
 
-# --- colour ---------------------------------------------------------------------------------------
-def rgb(h):
-    return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
-
-
-def mix(stops, f):
-    """Colour at fraction f of the line; stops = [(fraction, hex), ...] ascending."""
-    for (f0, c0), (f1, c1) in zip(stops, stops[1:]):
-        if f <= f1:
-            k = 0 if f1 == f0 else (f - f0) / (f1 - f0)
-            k = k * k * (3 - 2 * k)               # smoothstep: no visible kinks where stops meet
-            a, b = rgb(c0), rgb(c1)
-            return "#%02X%02X%02X" % tuple(round(a[i] + (b[i] - a[i]) * k) for i in range(3))
-    return stops[-1][1]
-
-
-def marks(runs):
-    """Index where each run starts, plus the cumulative length at every sample."""
-    pts = [p for run, _ in runs for p in run]
+def svg():
+    pts, m = sample(geometry())
     lens = [0.0]
     for a, b in zip(pts, pts[1:]):
         lens.append(lens[-1] + math.dist(a, b))
-    starts = [0]
-    for run, _ in runs:
-        starts.append(starts[-1] + len(run))
-    return starts, lens
+    rgb = lambda h: [int(h[i:i + 2], 16) for i in (1, 3, 5)]
+    stops = list(zip((0, lens[m["arm_end"]], lens[m["loop"]], lens[m["fold"]], lens[-1]), map(rgb, ANCHORS)))
 
+    def colour(l):
+        for (l0, c0), (l1, c1) in zip(stops, stops[1:]):
+            if l <= l1:
+                k = (l - l0) / (l1 - l0)
+                return "#%02X%02X%02X" % tuple(round(c0[i] + (c1[i] - c0[i]) * k) for i in range(3))
+        return ANCHORS[-1]
 
-def ribbon(runs, stops):
-    """runs = [(points, 'back'|'front'), ...] in path order -> SVG pieces, back layer first."""
-    pts = [(p, layer) for run, layer in runs for p in run]
-    _, lens = marks(runs)
-    total = lens[-1]
-    pieces = {"back": [], "front": []}
-    for i in range(len(pts) - 1):
-        (a, la), (b, lb) = pts[i], pts[i + 1]
-        if math.dist(a, b) < 1e-6:
-            continue
-        colour = mix(stops, (lens[i] + lens[i + 1]) / 2 / total)
-        pieces[lb if la == lb else "front"].append(
-            f'<line x1="{a[0]:.1f}" y1="{a[1]:.1f}" x2="{b[0]:.1f}" y2="{b[1]:.1f}" stroke="{colour}"/>')
-    return f'<g stroke-width="{W}" stroke-linecap="round">' + "".join(pieces["back"]) + "".join(pieces["front"]) + "</g>"
-
-
-def fit(body, runs, box=440):
-    """Centre the mark on the 512 canvas and scale it down to fit box x box (ribbon width included)."""
-    h = W / 2
-    pts = [p for run, _ in runs for p in run]
     xs, ys = [p[0] for p in pts], [p[1] for p in pts]
-    x0, x1, y0, y1 = min(xs) - h, max(xs) + h, min(ys) - h, max(ys) + h
-    s = min(1, box / (x1 - x0), box / (y1 - y0))
-    return f'<g transform="translate(256 256) scale({s:.4f}) translate({-(x0 + x1) / 2:.1f} {-(y0 + y1) / 2:.1f})">{body}</g>'
+    x0, y0 = min(xs) - W / 2, min(ys) - W / 2
+    k = HEIGHT / (max(ys) + W / 2 - y0)
+    w = (max(xs) + W / 2 - x0) * k
+    r = W / 2 * k
 
+    def dot(i):
+        return f'<circle cx="{(pts[i][0] - x0) * k:.2f}" cy="{(pts[i][1] - y0) * k:.2f}" r="{r:.2f}" fill="{colour(lens[i])}"/>'
 
-# --- marks ----------------------------------------------------------------------------------------
-def gateway():
-    """`>_`: down the chevron (front), a tight loop at the bottom-left that passes behind the lower arm,
-    right along the back of the underscore, a fold at its right end, and back left along its front face,
-    ending in a round cap just right of the arm. The front face half-covers the back run, so a dark band
-    of the back layer shows above it."""
-    a, tip = (150, 96), (318, 226)                # chevron: start, tip
-    ang = math.radians(37)                        # lower arm heads down-left at this angle
-    d1, d2 = unit(tip[0] - a[0], tip[1] - a[1]), (-math.cos(ang), math.sin(ang))
-    k = 44                                        # the turn at the tip starts this far back (tension)
-    p1, p2 = (tip[0] - d1[0] * k, tip[1] - d1[1] * k), (tip[0] + d2[0] * k, tip[1] + d2[1] * k)
-    yb, r = 352, 40                               # back run of the underscore, loop radius
-    sep = 0.75 * W                                # front run sits this far below: it half-covers the back
-    yf, xr = yb + sep, 456                        # front run, right end of the band
-    n = (-math.sin(ang), -math.cos(ang))          # loop centre lies up-left of the arm
-    t = (yb + r - tip[1] - r * n[1]) / d2[1]
-    e = (tip[0] + d2[0] * t, tip[1] + d2[1] * t)  # the arm becomes the loop here
-    c = (e[0] + r * n[0], e[1] + r * n[1])
-    a0 = math.atan2(e[1] - c[1], e[0] - c[0])
-    xa = tip[0] + d2[0] * ((yb - tip[1]) / d2[1])  # where the back run passes behind the arm
-    xf = xa + 1.45 * W                            # the front face ends here, clear of the arm
-    runs = [(line(a, p1), "front"), (quad(p1, tip, p2), "front"), (line(p2, e), "front"),
-            (arc(c, r, a0, 1.5 * math.pi), "back"),                         # loop, behind the arm
-            (line((c[0], yb), (xr, yb)), "back"),                            # back run, to the right
-            (arc((xr, yb + sep / 2), sep / 2, -math.pi / 2, math.pi / 2), "front"),   # fold
-            (line((xr, yf), (xf, yf)), "front")]                             # front face, back left
-    s, lens = marks(runs)
-    f = lambda i: lens[min(i, len(lens) - 1)] / lens[-1]
-    stops = [(0, DEEP), (f((s[1] + s[2]) // 2), CYAN), (f(s[3]), BLUE), (f(s[4]), BACK),
-             (f(s[5]), BLUE), (f(s[6]), CYAN), (1, BLUE)]
-    return fit(ribbon(runs, stops), runs)
-
-
-def forge():
-    cx, cy = 304, 256                             # centre of the voice arcs
-    r1, r2, sp = 70, 146, math.radians(46)        # inner/outer radius (fold = half the gap), half-spread
-    x0, y0, x1, y1, rr = 104, 172, 268, 340, 46   # the device
-    hr = (r2 - r1) / 2
-    fc = (cx + (r1 + hr) * math.cos(sp), cy + (r1 + hr) * math.sin(sp))   # centre of the fold
-    i_top = (cx + r1 * math.cos(sp), cy - r1 * math.sin(sp))
-    runs = [(arc((cx, cy), r2, -sp, sp), "front"),                       # outer voice arc, down
-            (arc(fc, hr, sp, sp + math.pi), "front"),                    # the fold
-            (arc((cx, cy), r1, sp, -sp), "front"),                       # inner arc, up
-            (quad(i_top, (x1 + 4, y0), (x1 - rr, y0)), "front"),         # into the device's top edge
-            (line((x1 - rr, y0), (x0 + rr, y0)), "front"),
-            (quad((x0 + rr, y0), (x0, y0), (x0, y0 + rr)), "front"),
-            (line((x0, y0 + rr), (x0, y1 - rr)), "front"),
-            (quad((x0, y1 - rr), (x0, y1), (x0 + rr, y1)), "front"),
-            (line((x0 + rr, y1), (x1 - rr, y1)), "front"),
-            (quad((x1 - rr, y1), (x1, y1), (x1, y1 - rr)), "front"),
-            (line((x1, y1 - rr), (x1, y0 - 40)), "back")]                # up behind the top edge
-    s, lens = marks(runs)
-    f = lambda i: lens[min(i, len(lens) - 1)] / lens[-1]
-    stops = [(0, CYAN), (f(s[1]), BRIGHT), (f(s[2]), BLUE), (f(s[3]), BRIGHT),
-             (f(s[7]), DEEP), (f(s[10]), BLUE), (1, BACK)]
-    return fit(ribbon(runs, stops), runs)
-
-
-def svg(kind, uid=None):
-    """The mark as SVG elements (no ids — every piece carries its own colour, so copies never clash)."""
-    return gateway() if kind == "gateway" else forge()
+    behind = "".join(dot(i) for i in range(m["cross"], len(pts)))
+    front = "".join(dot(i) for i in range(m["cross"], -1, -1))
+    return w, HEIGHT, f'<g>{behind}</g><g>{front}</g>'
 
 
 if __name__ == "__main__":
-    here = os.path.dirname(os.path.abspath(__file__))
-    for kind, title in (("gateway", "Muse Local Gateway"), ("forge", "Muse Gadget Forge")):
-        p = os.path.join(here, f"logo-{kind}.svg")
-        open(p, "w", encoding="utf-8", newline="\n").write(
-            f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="{title} logo">{svg(kind)}</svg>\n')
-        print(p, os.path.getsize(p), "bytes")
+    w, h, body = svg()
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logo.svg")
+    open(p, "w", encoding="utf-8", newline="\n").write(
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w:.1f} {h:.1f}" width="{w:.0f}" height="{h:.0f}" '
+        f'role="img" aria-label="Muse Local Gateway logo">{body}</svg>\n')
+    print(p, os.path.getsize(p), "bytes")

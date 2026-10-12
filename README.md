@@ -1,7 +1,7 @@
 [![English](https://img.shields.io/badge/lang-English-16161D?style=flat-square)](README.md)
 [![한국어](https://img.shields.io/badge/lang-%ED%95%9C%EA%B5%AD%EC%96%B4-lightgrey?style=flat-square)](README.kr.md)
 
-<img src="docs/media/logo-gateway.svg" width="72" alt="Muse Local Gateway logo">
+<img src="docs/media/logo.svg" width="72" alt="Muse Local Gateway logo">
 
 # Muse Local Gateway
 

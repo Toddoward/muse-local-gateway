@@ -100,7 +100,7 @@ def svg(theme, lang):
     ]
     css = css[:3] + [remap(k) if k.startswith("@keyframes") and "blink" not in k else k for k in css[3:]]
     # intro/outro and the timeline (already on the 15 s scale)
-    big, small = "translate(513px,92px) scale(.34)", "translate(66px,42px) scale(.075)"
+    big, small = "translate(541px,110px) scale(.4)", "translate(70px,44px) scale(.108)"
     css += [
         f"@keyframes logo{{0%,10.7%{{transform:{big}}}16%,90.7%{{transform:{small}}}96%,100%{{transform:{big}}}}}",
         "@keyframes bigname{0%,9%{opacity:1}12%,93%{opacity:0}96%,100%{opacity:1}}",
@@ -167,7 +167,7 @@ def svg(theme, lang):
 <path class="a" d="M1058 322 C 1090 250, 1070 150, 1000 128" fill="none" stroke="{c["t3"]}" stroke-width="1.5" stroke-dasharray="4 6" style="animation-name:back;opacity:1"/>
 </g>
 <!-- logo: centre -> corner -> centre -->
-<g class="a" style="animation-name:logo;transform-box:view-box;transform-origin:0 0;transform:{small}">{logo("gateway", f"g{lang}{theme[0]}")}</g>
+<g class="a" style="animation-name:logo;transform-box:view-box;transform-origin:0 0;transform:{small}">{logo()[2]}</g>
 <text class="a t" x="600" y="320" text-anchor="middle" font-size="32" font-weight="600" letter-spacing="-0.025em" fill="url(#tg)" style="animation-name:bigname;opacity:0">{NAME}</text>
 <text class="a t" x="124" y="68" font-size="17" font-weight="600" letter-spacing="-0.02em" fill="{c["t2"]}" style="animation-name:smallname;opacity:1">{NAME}</text>
 </svg>

@@ -168,8 +168,8 @@ def svg(theme, lang):
 </g>
 <!-- logo: centre -> corner -> centre -->
 <g class="a" style="animation-name:logo;transform-box:view-box;transform-origin:0 0;transform:{small}">{logo("gateway", f"g{lang}{theme[0]}")}</g>
-<text class="a t" x="600" y="320" text-anchor="middle" font-size="32" font-weight="600" fill="url(#tg)" style="animation-name:bigname;opacity:0">{NAME}</text>
-<text class="a t" x="124" y="68" font-size="17" font-weight="600" fill="{c["t2"]}" style="animation-name:smallname;opacity:1">{NAME}</text>
+<text class="a t" x="600" y="320" text-anchor="middle" font-size="32" font-weight="600" letter-spacing="-0.025em" fill="url(#tg)" style="animation-name:bigname;opacity:0">{NAME}</text>
+<text class="a t" x="124" y="68" font-size="17" font-weight="600" letter-spacing="-0.02em" fill="{c["t2"]}" style="animation-name:smallname;opacity:1">{NAME}</text>
 </svg>
 '''
 

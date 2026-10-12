@@ -1,6 +1,8 @@
 [![English](https://img.shields.io/badge/lang-English-16161D?style=flat-square)](README.md)
 [![한국어](https://img.shields.io/badge/lang-%ED%95%9C%EA%B5%AD%EC%96%B4-lightgrey?style=flat-square)](README.kr.md)
 
+<img src="docs/media/logo-gateway.svg" width="72" alt="Muse Local Gateway logo">
+
 # Muse Local Gateway
 
 **Let your Muse step out of its cloud computer and work on the one beside you.**
@@ -45,8 +47,8 @@ Muse writes the firmware, builds it with ESP-IDF on the workbench, flashes the E
 USB port, reads its boot log, and fixes what broke. Then you pair it in the Muse app. *(That last
 loop is [Muse Gadget Forge](https://github.com/Toddoward/muse-gadget-forge), a skill on top of this one.)*
 
-**And a true story:** the very first commit in this repository was written by **Ailia** — the author's
-own Muse — on its workbench, through the gateway this project grew out of. It's right there in `git log`.
+**And a true story:** the very first commit in this repository was written by **Ailia, my very own
+Muse AI** — on its workbench, through the gateway this project grew out of. It's right there in `git log`.
 
 ## Who holds the keys
 

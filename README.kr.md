@@ -1,6 +1,8 @@
 [![English](https://img.shields.io/badge/lang-English-lightgrey?style=flat-square)](README.md)
 [![한국어](https://img.shields.io/badge/lang-%ED%95%9C%EA%B5%AD%EC%96%B4-16161D?style=flat-square)](README.kr.md)
 
+<img src="docs/media/logo-gateway.svg" width="72" alt="Muse Local Gateway 로고">
+
 # Muse Local Gateway
 
 **클라우드 컴퓨터 안의 Muse가, 내 옆의 컴퓨터에서 일할 수 있게.**
@@ -43,7 +45,7 @@ Muse가 펌웨어를 쓰고, 작업대에서 ESP-IDF로 빌드하고, USB에 꽂
 마지막으로 Muse 앱에서 페어링만 하면 됩니다. *(이 과정은 이 스킬 위에 얹는 또 하나의 스킬,
 [Muse Gadget Forge](https://github.com/Toddoward/muse-gadget-forge)가 맡습니다.)*
 
-**그리고 실제 이야기 하나.** 이 저장소의 첫 커밋은 만든 사람의 Muse인 **Ailia**가 썼습니다. 이 프로젝트가 시작된 바로 그
+**그리고 실제 이야기 하나.** 이 저장소의 첫 커밋은 **오직 저만의 Muse AI인 Ailia**가 썼습니다. 이 프로젝트가 시작된 바로 그
 게이트웨이를 통해, 자기 작업대 위에서요. `git log`에 그대로 남아 있습니다.
 
 ## 열쇠는 누가 쥐나

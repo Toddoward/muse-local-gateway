@@ -1,0 +1,11 @@
+# Smoke-test override: the "tailscale" service becomes a plain curl client. Requests from it look
+# exactly like tailnet traffic to the gateway and the bench, so the real code paths are exercised
+# without a tailnet. Used by tests/smoke.py only.
+services:
+  tailscale:
+    image: curlimages/curl:8.11.1
+    entrypoint: ["sleep", "infinity"]
+    user: root
+  bench:
+    volumes:
+      - ./bench/test_bench.py:/app/test_bench.py:ro

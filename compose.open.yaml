@@ -1,0 +1,10 @@
+# Network mode "open": the bench reaches the host and the whole LAN directly, all protocols
+# (MQTT, UDP, mDNS discovery). If Muse is ever prompt-injected, so is that reach. Read SECURITY.md.
+services:
+  bench:
+    networks: [default, bench]
+    environment:
+      HTTP_PROXY: ""
+      HTTPS_PROXY: ""
+      http_proxy: ""
+      https_proxy: ""

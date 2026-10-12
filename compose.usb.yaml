@@ -1,0 +1,10 @@
+# USB serial for the bench (ESP32 & co.). Linux hosts, or Windows with setup/usb-attach.ps1.
+# /dev is mounted so boards that reset and re-enumerate show up again; the cgroup rules then allow
+# ONLY serial devices. Every other device node (disks, /dev/mem, ...) stays denied.
+services:
+  bench:
+    volumes:
+      - /dev:/dev
+    device_cgroup_rules:
+      - "c 166:* rmw"   # ttyACM: native USB (ESP32-S3/C3/C6 ...)
+      - "c 188:* rmw"   # ttyUSB: CP210x / CH34x / FTDI bridges

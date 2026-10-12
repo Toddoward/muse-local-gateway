@@ -1,0 +1,85 @@
+# Muse Local Gateway — base stack. Network mode "isolated" unless an override is added (see .env).
+#   gateway   file API (:8730)            -> your shared folder only
+#   bench     Muse's shell (:8731)        -> internal network, no secrets, no host port
+#   egress    the bench's only way out    -> internet yes; host, LAN, tailnet no
+#   tailscale the only thing on the tailnet; the HOST stays off it
+# NEVER mount /var/run/docker.sock and never make anything privileged.
+name: muse-local-gateway
+
+services:
+  gateway:
+    image: python:3.12-slim
+    restart: unless-stopped
+    command: ["python", "-u", "/app/gateway.py"]
+    read_only: true
+    environment:
+      SHARE_DIR: /share
+      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-200}
+    volumes:
+      - ./gateway/gateway.py:/app/gateway.py:ro
+      - ${MUSE_SHARE:-./shared}:/share
+
+  bench:
+    build: ./bench
+    image: muse-local-gateway-bench:0.1.0
+    restart: unless-stopped
+    init: true                     # reaps orphans left by killed jobs
+    networks: [bench]              # internal only: no route to host, LAN, or internet
+    environment:
+      HTTP_PROXY: http://egress:3128
+      HTTPS_PROXY: http://egress:3128
+      http_proxy: http://egress:3128
+      https_proxy: http://egress:3128
+      NO_PROXY: localhost,127.0.0.1
+      no_proxy: localhost,127.0.0.1
+    command: ["python3", "-u", "/app/bench.py"]
+    working_dir: /work
+    volumes:
+      - ./bench/bench.py:/app/bench.py:ro
+      - ${MUSE_SHARE:-./shared}:/work
+      # Bind mounts are slow for builds with thousands of small files (Docker Desktop). Build here.
+      - bench-build:/build
+
+  egress:
+    image: ubuntu/squid:6.6-24.04_beta
+    restart: unless-stopped
+    networks: [default, bench]
+    environment:
+      LAN_ALLOW: ${LAN_ALLOW:-}
+    # Writes the lan-allow rules from LAN_ALLOW, then starts squid as the image normally does.
+    entrypoint:
+      - sh
+      - -c
+      - |
+        : > /etc/squid/lan-allow.conf
+        for ip in $$LAN_ALLOW; do echo "acl lan_allow dst $$ip" >> /etc/squid/lan-allow.conf; done
+        if [ -n "$$LAN_ALLOW" ]; then echo "http_access allow lan_allow" >> /etc/squid/lan-allow.conf; fi
+        exec entrypoint.sh -f /etc/squid/squid.conf -NYC
+    volumes:
+      - ./egress/squid.conf:/etc/squid/squid.conf:ro
+
+  tailscale:
+    image: tailscale/tailscale:v1.102.5
+    hostname: ${TS_HOSTNAME:-muse-gateway}
+    restart: unless-stopped
+    depends_on: [gateway, bench]
+    environment:
+      TS_HOSTNAME: ${TS_HOSTNAME:-muse-gateway}
+      TS_STATE_DIR: /var/lib/tailscale
+      TS_USERSPACE: "true"         # no TUN device or extra capabilities needed
+      TS_SERVE_CONFIG: /config/serve.json
+      # A tagged auth key (tag:muse-gw). Interpolated from .env so ONLY this value enters a container.
+      TS_AUTHKEY: ${TS_AUTHKEY:-}
+      TS_AUTH_ONCE: "true"         # once registered, ./tailscale-state is reused
+    networks: [default, bench]     # on the bench network only so `serve` can forward :8731
+    volumes:
+      - ./tailscale-state:/var/lib/tailscale   # holds the node key: never commit, never share
+      - ./serve.json:/config/serve.json:ro
+
+networks:
+  default: {}
+  bench:
+    internal: true
+
+volumes:
+  bench-build:

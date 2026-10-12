@@ -1,0 +1,22 @@
+// Tailnet policy for Muse Local Gateway. This ACL is the ONLY lock on the gateway — read it.
+// Tailscale admin console -> Access controls -> JSON editor. Merge into your policy, then Save.
+// Save it BEFORE generating the tag:muse-gw auth key: a tag can only be used once it is defined here.
+{
+	"tagOwners": {
+		"tag:muse":    ["autogroup:admin"],   // the Muse device (tag it after Muse joins)
+		"tag:muse-gw": ["autogroup:admin"],   // the gateway sidecar (its auth key carries this tag)
+	},
+
+	"grants": [
+		// Your own untagged devices keep full access to each other (Tailscale's default).
+		{"src": ["autogroup:member"], "dst": ["*"], "ip": ["*"]},
+
+		// Muse may reach exactly one node, on exactly two ports: 8730 = files, 8731 = shell.
+		// IMPORTANT: tag the Muse device tag:muse. An UNTAGGED Muse device counts as one of YOUR
+		// devices and falls under the rule above — full access to everything on your tailnet.
+		{"src": ["tag:muse"], "dst": ["tag:muse-gw"], "ip": ["tcp:8730", "tcp:8731"]},
+
+		// File gateway only (no shell)? Use this line instead of the one above:
+		// {"src": ["tag:muse"], "dst": ["tag:muse-gw"], "ip": ["tcp:8730"]},
+	],
+}

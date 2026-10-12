@@ -1,0 +1,6 @@
+{
+  "TCP": {
+    "8730": { "TCPForward": "gateway:8730" },
+    "8731": { "TCPForward": "bench:8731" }
+  }
+}

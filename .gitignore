@@ -1,0 +1,6 @@
+.env
+tailscale-state/
+shared/
+setup/usb-attach.log
+__pycache__/
+shared-smoke/

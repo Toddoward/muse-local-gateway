@@ -9,6 +9,7 @@
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-16161D?style=flat-square)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.0-16161D?style=flat-square)](CHANGELOG.md)
+[![CI](https://github.com/Toddoward/muse-local-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/Toddoward/muse-local-gateway/actions/workflows/ci.yml)
 [![Unofficial](https://img.shields.io/badge/Muse-community%20skill-0069D9?style=flat-square)](#credits)
 
 <picture>
@@ -121,7 +122,7 @@ flowchart LR
 | USB serial — [details](docs/usb-serial.md) | ✅ | ✅ with usbipd-win | ❌ |
 | [Direct module](docs/direct.md), no container | experimental | ❌ | experimental |
 
-Tested on Windows 11 + Docker Desktop: [`tests/smoke.py`](tests/smoke.py), 15 of 15 checks, USB included.
+Tested on Windows 11 + Docker Desktop ([`tests/smoke.py`](tests/smoke.py), 15 of 15 checks, USB included) and on Linux by CI on every push.
 Muse's side of the deal lives in [SKILL.md](SKILL.md).
 
 ## Credits

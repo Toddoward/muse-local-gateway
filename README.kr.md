@@ -9,6 +9,7 @@
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-16161D?style=flat-square)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.0-16161D?style=flat-square)](CHANGELOG.md)
+[![CI](https://github.com/Toddoward/muse-local-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/Toddoward/muse-local-gateway/actions/workflows/ci.yml)
 [![Unofficial](https://img.shields.io/badge/Muse-community%20skill-0069D9?style=flat-square)](#만든-것들에-대한-감사)
 
 <picture>
@@ -118,7 +119,7 @@ flowchart LR
 | USB 시리얼 — [자세히](docs/usb-serial.kr.md) | ✅ | ✅ usbipd-win 필요 | ❌ |
 | [Direct 모듈](docs/direct.kr.md), 컨테이너 없이 | 실험적 | ❌ | 실험적 |
 
-Windows 11 + Docker Desktop에서 [`tests/smoke.py`](tests/smoke.py) 15개 항목을 모두 통과했습니다(USB 포함).
+Windows 11 + Docker Desktop에서 [`tests/smoke.py`](tests/smoke.py) 15개 항목을 모두 통과했고(USB 포함), Linux에서는 푸시할 때마다 CI가 같은 테스트를 돌립니다.
 Muse 쪽에서 쓰는 절차는 [SKILL.md](SKILL.md)에 있습니다.
 
 ## 만든 것들에 대한 감사

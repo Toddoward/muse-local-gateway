@@ -12,4 +12,6 @@ First public release.
   with a watcher that keeps drivers loaded across WSL restarts.
 - **Setup** for Linux/macOS (`setup.sh`) and Windows (`setup.ps1`), tailnet ACL example,
   experimental direct module, smoke test (`tests/smoke.py`).
+- The bench image includes `libusb-1.0-0`, so USB toolchains (ESP-IDF's openocd) install cleanly.
+- README hero: an animated SVG in Muse's palette, light/dark and English/Korean (`docs/media/make_hero.py`).
 - Docs in English and Korean.

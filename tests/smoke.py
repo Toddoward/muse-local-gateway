@@ -13,7 +13,7 @@ import time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FILES = ["compose.yaml", "tests/compose.smoke.yaml"] + (["compose.usb.yaml"] if "--usb" in sys.argv else [])
-LAN_OK, LAN_NO = "192.0.2.10", "192.0.2.11"  # TEST-NET-1: never real devices
+LAN_OK, LAN_NO = "192.168.255.10", "192.168.255.11"  # private range (the proxy must decide), unlikely to exist
 ENV = {**os.environ, "COMPOSE_FILE": "", "LAN_ALLOW": LAN_OK, "MUSE_SHARE": "./shared-smoke"}
 failed = []
 

@@ -131,7 +131,7 @@ Muse 쪽에서 쓰는 절차는 [SKILL.md](SKILL.md)에 있습니다.
 - **[Tailscale](https://tailscale.com)** — 사설 네트워크, `tailscale serve`, 그리고 진짜 잠금을 맡는 ACL.
 - **[Docker](https://www.docker.com)**, **[Squid](https://www.squid-cache.org)** 프록시 (Canonical의 [`ubuntu/squid`](https://hub.docker.com/r/ubuntu/squid) 이미지) — 울타리.
 - **[usbipd-win](https://github.com/dorssel/usbipd-win)** (Frans van Dorsselaer) — Windows에서 USB 보드를 넘겨주는 다리.
-- **[ESP-IDF](https://github.com/espressif/esp-idf)**와 **esptool** (Espressif) — 작업대가 가장 아끼는 도구.
+- [**ESP-IDF**](https://github.com/espressif/esp-idf)와 **esptool** (Espressif) — 작업대가 가장 아끼는 도구.
 
 Muse Local Gateway는 **비공식 커뮤니티 프로젝트**이며, Meta가 만들거나 보증하거나 지원하지 않습니다. "Muse"는 Meta의 이름이고,
 무엇과 함께 동작하는지 밝히기 위해서만 씁니다. 내 컴퓨터에서 Muse에게 시킨 일의 책임은 사용자에게 있습니다 —

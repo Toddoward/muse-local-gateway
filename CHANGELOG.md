@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Skill name is now `muse-local-gateway` (lowercase-hyphen, the Agent Skills convention).
+
 ## 0.1.0 — 2026-10-12
 
 First public release.

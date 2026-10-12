@@ -77,7 +77,7 @@ Write-Host @"
 
 Done. Send this to Muse:
 ----------------------------------------------------------------------
-Install the muse_local_gateway skill from
+Install the muse-local-gateway skill from
 https://github.com/Toddoward/muse-local-gateway (SKILL.md).
 My gateway: files http://${ip}:8730, shell http://${ip}:8731
 Run bin/gateway-check.sh ${ip}:8730 first.

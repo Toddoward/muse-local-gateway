@@ -100,7 +100,7 @@ def svg(theme, lang):
     ]
     css = css[:3] + [remap(k) if k.startswith("@keyframes") and "blink" not in k else k for k in css[3:]]
     # intro/outro and the timeline (already on the 15 s scale)
-    big, small = "translate(498px,88px) scale(.4)", "translate(68px,26px) scale(.11)"
+    big, small = "translate(513px,92px) scale(.34)", "translate(66px,42px) scale(.075)"
     css += [
         f"@keyframes logo{{0%,10.7%{{transform:{big}}}16%,90.7%{{transform:{small}}}96%,100%{{transform:{big}}}}}",
         "@keyframes bigname{0%,9%{opacity:1}12%,93%{opacity:0}96%,100%{opacity:1}}",

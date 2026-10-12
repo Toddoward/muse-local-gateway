@@ -1,0 +1,20 @@
+name: ci
+on:
+  push:
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 gateway/test_gateway.py
+      - run: python3 bench/test_bench.py
+      - run: shellcheck setup/setup.sh direct/run.sh bin/*.sh
+
+  smoke:
+    # The whole stack on real Docker: uploads, exec, proxy, isolation (Linux field test).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tests/smoke.py

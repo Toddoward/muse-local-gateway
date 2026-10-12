@@ -9,3 +9,7 @@ services:
   bench:
     volumes:
       - ./bench/test_bench.py:/app/test_bench.py:ro
+  egress:
+    # Docker Desktop resolves this name by itself; plain Linux Docker needs it spelled out.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
